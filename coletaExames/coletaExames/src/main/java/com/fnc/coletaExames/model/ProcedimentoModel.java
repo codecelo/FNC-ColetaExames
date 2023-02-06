@@ -11,5 +11,4 @@ public class ProcedimentoModel {
     private Integer codigo;
     private String nome;
     private Integer prazoMaximo;
-    private PacienteModel paciente;
 }

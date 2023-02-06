@@ -12,57 +12,48 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/pacientes/{cpf}/procedimentos")
+@RequestMapping("api/procedimentos")
 public class ProcedimentosController {
 
     @Autowired
     ProcedimentoService procedimentoService;
-    @Autowired
-    PacienteService pacienteService;
 
     @PostMapping
-    public ResponseEntity<ProcedimentoModel> creat(@PathVariable String cpf, @RequestBody ProcedimentoModel procedimento){
-       var paciente = pacienteService.getPacienteById(cpf);
-        procedimento = procedimentoService.addProcedimento(paciente, procedimento);
+    public ResponseEntity<ProcedimentoModel> creat(@RequestBody ProcedimentoModel procedimento){
 
-        var uri = ServletUriComponentsBuilder.fromCurrentRequest().path(paciente.getCpf()).build().toUri();
+        procedimento = procedimentoService.addProcedimento(procedimento);
+
+        var uri = ServletUriComponentsBuilder.fromCurrentRequest().build().toUri();
 
         return ResponseEntity.created(uri).body(procedimento);
     }
 
     @GetMapping
-    public ResponseEntity<List<ProcedimentoModel>> getAll(@PathVariable String cpf){
-        PacienteModel paciente = pacienteService.getPacienteById(cpf);
+    public ResponseEntity<List<ProcedimentoModel>> getAll(){
 
-       List<ProcedimentoModel> procedimentos = procedimentoService.getAll(paciente);
+       List<ProcedimentoModel> procedimentos = procedimentoService.getAll();
 
         return ResponseEntity.ok(procedimentos);
     }
 
     @GetMapping("/{idProcedimento}")
-    public ResponseEntity<ProcedimentoModel>getById(@PathVariable String cpf, @PathVariable Integer idProcedimento){
+    public ResponseEntity<ProcedimentoModel>getById(@PathVariable Integer idProcedimento){
 
-        PacienteModel paciente= pacienteService.getPacienteById(cpf);
-
-        ProcedimentoModel procedimento = procedimentoService.getById(paciente, idProcedimento);
+        ProcedimentoModel procedimento = procedimentoService.getById(idProcedimento);
 
         return ResponseEntity.ok(procedimento);
     }
     @DeleteMapping("/{idProcedimento}")
-    public ResponseEntity<ProcedimentoModel>delete(@PathVariable String cpf, @PathVariable Integer idProcedimento){
+    public ResponseEntity<ProcedimentoModel>delete(@PathVariable Integer idProcedimento){
 
-        PacienteModel paciente= pacienteService.getPacienteById(cpf);
-
-         procedimentoService.delete(paciente, idProcedimento);
+         procedimentoService.delete(idProcedimento);
 
         return ResponseEntity.ok().build();
     }
     @PutMapping("/{idProcedimento}")
-    public ResponseEntity<ProcedimentoModel>update(@PathVariable String cpf, @PathVariable Integer idProcedimento, @RequestBody ProcedimentoModel procedimento){
+    public ResponseEntity<ProcedimentoModel>update(@PathVariable Integer idProcedimento, @RequestBody ProcedimentoModel procedimento){
 
-        PacienteModel paciente= pacienteService.getPacienteById(cpf);
-
-        ProcedimentoModel procedimentoAtualizado = procedimentoService.update(paciente, idProcedimento, procedimento);
+        ProcedimentoModel procedimentoAtualizado = procedimentoService.update(idProcedimento, procedimento);
 
         return ResponseEntity.ok(procedimentoAtualizado);
     }
